@@ -42,4 +42,8 @@ build/
 bin/
 lib/
 .github/**
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CMakeFiles/*
 

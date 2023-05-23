@@ -27,6 +27,29 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string& path)
     return std::move(contents);
 }
 
+void readValues(float& startX, float& startY, float& endX, float& endY) {
+    do
+    {
+        std::cout << "Enter a value for start X (between 0 and 100): " << std::endl;
+        std::cin >> startX;
+    } while (startX < 0 || startX > 100);
+    do
+    {
+        std::cout << "Enter a value for start Y (between 0 and 100): " << std::endl;
+        std::cin >> startY;
+    } while (startY < 0 || startY > 100);
+    do
+    {
+        std::cout << "Enter a value for end X (between 0 and 100): " << std::endl;
+        std::cin >> endX;
+    } while (endX < 0 || endX > 100);
+    do
+    {
+        std::cout << "Enter a value for end Y (between 0 and 100): " << std::endl;
+        std::cin >> endY;
+    } while (endY < 0 || endY > 100);
+};
+
 int main(int argc, const char** argv)
 {
     std::string osm_data_file = "";
@@ -56,26 +79,7 @@ int main(int argc, const char** argv)
     // user input for these values using std::cin. Pass the user input to the
     // RoutePlanner object below in place of 10, 10, 90, 90.
     float startX, startY, endX, endY;
-    do
-    {
-        std::cout << "Enter a value for start X (between 0 and 100): " << std::endl;
-        std::cin >> startX;
-    } while (startX < 0 || startX > 100);
-    do
-    {
-        std::cout << "Enter a value for start Y (between 0 and 100): " << std::endl;
-        std::cin >> startY;
-    } while (startY < 0 || startY > 100);
-    do
-    {
-        std::cout << "Enter a value for end X (between 0 and 100): " << std::endl;
-        std::cin >> endX;
-    } while (endX < 0 || endX > 100);
-    do
-    {
-        std::cout << "Enter a value for end Y (between 0 and 100): " << std::endl;
-        std::cin >> endY;
-    } while (endY < 0 || endY > 100);
+    readValues(startX, startY, endX, endY);
 
     // Build Model.
     RouteModel model{ osm_data };

@@ -10,8 +10,8 @@ RoutePlanner::RoutePlanner(RouteModel& model, float start_x, float start_y, floa
 
     // TODO 2: Use the m_Model.FindClosestNode method to find the closest nodes to the starting and ending coordinates.
     // Store the nodes you find in the RoutePlanner's start_node and end_node attributes.
-    start_node = &model.FindClosestNode(start_x, start_y);
-    end_node = &model.FindClosestNode(end_x, end_y);
+    start_node = &(model.FindClosestNode(start_x, start_y));
+    end_node = &(model.FindClosestNode(end_x, end_y));
 }
 
 
@@ -40,7 +40,7 @@ void RoutePlanner::AddNeighbors(RouteModel::Node* current_node) {
         node->g_value = current_node->g_value + current_node->distance(*node);
         node->visited = true;
 
-        open_list.push_back(node);
+        open_list.emplace_back(node);
     }
 }
 
@@ -54,7 +54,7 @@ void RoutePlanner::AddNeighbors(RouteModel::Node* current_node) {
 
 RouteModel::Node* RoutePlanner::NextNode() {
     std::sort(open_list.begin(), open_list.end(), [](const RouteModel::Node* a, const RouteModel::Node* b) {
-        return (a->g_value + a->h_value) > (b->g_value + b->h_value);
+        return (a->g_value + a->h_value) < (b->g_value + b->h_value);
         });
     RouteModel::Node* lowest_sum_node = open_list.front();
     open_list.erase(open_list.begin());
@@ -96,16 +96,20 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node*
 // - Use the NextNode() method to sort the open_list and return the next node.
 // - When the search has reached the end_node, use the ConstructFinalPath method to return the final path that was found.
 // - Store the final path in the m_Model.path attribute before the method exits. This path will then be displayed on the map tile.
-
 void RoutePlanner::AStarSearch() {
-    RouteModel::Node* current_node = nullptr;
+    RouteModel::Node* current_node = start_node;
+    current_node->visited = true;
+    open_list.emplace_back(current_node);
 
-    while (current_node != end_node)
-    {
-        for (RouteModel::Node* node : current_node->neighbors) {
-            AddNeighbors(node);
+    while(open_list.size() > 0){
+        auto nextNode = NextNode();
+        if (nextNode == end_node)
+        {
+            m_Model.path = ConstructFinalPath(nextNode);
+            break;
         }
-        current_node = NextNode();
+        else{
+            AddNeighbors(nextNode);
+        }        
     }
-    m_Model.path = ConstructFinalPath(current_node);
 }
